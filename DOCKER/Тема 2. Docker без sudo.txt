@@ -1,0 +1,55 @@
+По умолчанию команда docker может быть запущена только пользователем с "root" правами 
+или пользователем из группы "docker", которая автоматически создается при установке Docker.
+
+Если попытаться запустить команду docker без префикса sudo или с помощью пользователя,
+который не находится в группе docker, то получите следующий output:
+
+# docker: Cannot connect to the Docker daemon. Is the docker daemon running on this host?.
+# See 'docker run --help'.
+
+Добавить свой профиль в группу docker можно следующими командами:
+
+1) sudo usermod -aG docker ${USER} 
+    или
+sudo usermod -aG docker username
+
+2) su - ${USER}
+Подтверждаем добавление нового члена в группу Docker.
+
+3) id -nG
+Проверяем, что в списке групп ользователя появилась группа "docker"
+
+Ещё, как вариант, можно прописать просто:
+id username
+
+// ЧТО-ТО НЕ ТАК С ЭТОЙ ИНСТРУКЦИЕЙ.
+Надо переработать инструкцию снизу.
+{
+Create the docker group.
+
+sudo groupadd docker
+
+    Add your user to the docker group.
+
+sudo usermod -aG docker ${USER}
+
+    You would need to loog out and log back in so that your group membership is re-evaluated or type the following command:
+
+su -s ${USER}
+
+    Verify that you can run docker commands without sudo.
+
+docker run hello-world
+
+    This command downloads a test image and runs it in a container. When the container runs, it prints an informational message and exits.
+
+    If you initially ran Docker CLI commands using sudo before adding your user to the docker group, you may see the following error, which indicates that your ~/.docker/ directory was created with incorrect permissions due to the sudo commands.
+
+WARNING: Error loading config file: /home/user/.docker/config.json -
+stat /home/user/.docker/config.json: permission denied
+
+    To fix this problem, either remove the ~/.docker/ directory (it is recreated automatically, but any custom settings are lost), or change its ownership and permissions using the following commands:
+
+sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+sudo chmod g+rwx "$HOME/.docker" -R
+}
