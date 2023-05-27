@@ -28,8 +28,8 @@ faculty (название поля), VARCHAR (строка, используют
 - DROP courses
 Удаление таблицы с именем "courses".
 
-- INSERT INTO courses VALUES (1, “bio”, 1)
-Вставить в таблицу значения (по порядку: 1 - id, “bio” - факультет, строковый тип данных VARCHAR, 1 - номер).
+- INSERT INTO courses VALUES (5, “bio”, 2)
+Вставить в таблицу значения (по порядку: 5 - id, “bio” - факультет, строковый тип данных VARCHAR, 2 - номер).
 
 - SELECT * FROM courses
 Показать ВСЮ таблицу.
