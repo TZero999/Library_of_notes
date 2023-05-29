@@ -1,0 +1,323 @@
+1. Значения по умолчанию:
+Позволяет назначать "значения по умолчанию" дял функций.
+По умолчанию в JS все значения параметров функции = "undefined".
+
+ES6 позволяет установить для них значения по умолчанию. Вот пример:
+# ES 5:
+{
+    function add(num1, num2) { return num1+num2 };
+    add(3); //# NaN (num2 = undefined)
+}
+
+# ES 6:
+{
+    function add(num1, num2 = 10) { return num1+num2 };
+    add(3); //# 13 (num2 default value = 10)
+}
+
+1.1 Более ранние параметры функции доступны более позним параметрам по уомлчанию:
+{
+   function getFullName(firstName, lastName, fullName=lastName+' '+lastName){
+    return fullName;
+   }
+
+   getFullName('John','Doe'); //# John Doe
+   getFullname('John', 'Doe', 'John Doe'); //# John Doe
+}
+
+2. `Меня зовут ${name}` - литералы шаблонов:
+Шаблонные литералы допускают встроенные выражения, многострочные выражения и т.д.
+Они заметно улучшают читабельность и скорость написания кода, где часто необходимо
+вносить в готовый текст изменения.
+
+3. Шаблоны с тэгами:
+Это - более продвинутая форма литералов шаблонов.
+
+# Пример:
+{
+    let myName = 'John';
+    let myRole = 'Software Developer';
+    
+    function myTag(array, name, role){
+        let str0 = array[0]; // My name is
+        let str1 = array[1]; // and I am
+ 
+        //# В будущем можем манипулировать перемнными str0, str1, name и role.
+        return `${str0}${name}${str1}${role}`;
+    }
+    
+    console.log(myTag`My name is ${myName} and I am ${myRole}`);
+    //# My name is John and I am Software Developer
+}
+
+Первый аргумент шаблона с тэгами ВСЕгДА МАССИВ СТРОК!
+
+4. Деструктурирование:
+"Разрушение массивов и объектов". Это полезное свойство позволяет считывать значения
+из массива или свойства объекта в отдельные переменные.
+
+# Пример с массивом:
+{
+    let myName, myRole;
+    let array = ['John', 'Software Developer'];
+    [myName, myRole] = array;
+    //# Тут мы произвели позиционное присвоение переменным уже существующих значений массива
+    
+    console.log(myName, my Role); //# John Software Developer
+}
+
+# Пример с объектом:
+{
+    let myName, myRole;
+    let object = {myName:'John', myRole:'Software Developer'};
+    ({myName, myRole}=object);
+    //# Тут свойства объекта (ключи) сопоставляются с локальными переменными
+    
+    console.log(myName, myRole); //John Software Developer
+}
+
+4.1 Отдельные фишки деструктурирования:
+- Использование значений по умолчанию, если значение из массива не задано:
+{
+    let myName, myRole;
+    let array = ['Toad'];
+    [myName='John', myRole='Software Developer'] = array;
+    
+    console.log(myName, myRole); //# Toad Software Developer
+}
+
+- Игнорирование некоторых значений из массива:
+{
+    let myName, myRole;
+    let array = ['John', 'Toad', 'Software Developer'];
+    [myName, , myRole] = array;
+    
+    console.log(myName, myRole); //# John Software Developer
+}
+
+5. Стрелочные функции
+Стрелочные функции - новый быстрый синтаксис написания обычных функций.
+Сравним:
+
+# Обычная функция:
+{
+    function getName(firstName,lastName){ return ``${firstName} ${lastName}``  }
+    console.log(getName('John','Doe'));
+}
+
+# Стрелочная функция:
+{
+    let getName = ((firstName,lastName)=> `${firstName} ${lastName}`);
+    console.log(getName('John','Doe'));
+}
+
+Обе функции возвращают "John Doe". 
+
+- Недостаток:
+1) У стрелочных функция нет своего контекста "this".
+2) Стрелочные функции не могут быть "Конструкторами". С ними нельзя использовать ключевые слова.
+
+6. let & const
+У старого способа объявления переменной "var" область видимости ограничена функцией.
+
+Новый способ объявления переменных "let" ограничивается блоком кода {}, в котором объявлена переменная.
+
+# Пример var:
+{
+    var x = 10;
+        if(x==10){
+            var x = 20;
+            console.log(x); //# 20
+        }
+    console.log(x); //# 20;
+}
+
+# Пример let:
+{
+    let x = 10;
+        if(x==10){
+            let x = 20;
+            console.log(x); //# 20
+        }
+    console.log(x); //# 10;
+}
+
+Новый оператор "const" тоже объявляет переменную с блоковым видимостью, но не допускает её
+повторного объявления или повторной инициализации. То бишь значение доступно "только для чтения",
+его нельзя изменить.
+
+# Пример const:
+{
+    const myName; //#  Err: const должна быть инициализирована
+    const myName='John';
+    const myName='Doe'; //# Err: const не может быть изменена
+    var myName='Doe';   //# Err: myName зарезервировано для переменной, объявленно через "const". 
+}
+
+Через "const" можно объявлять ещё и объекты. В таком случае МЫ СМОЖЕМ изменять значения КЛЮЧЕЙ,
+но вот перезаписать объект нам никто не даст.
+
+# Пример const с массивами и объектами:
+{
+    const obj = {'firstName':'John'};
+    const obj = {'name':'Toad'}; //# Err: Нельзя переназначить объект, объявленный через "const".
+    const obj.firstName = 'Toad'; //# Сработает, т.к. ключ не защищён от перезаписи
+}
+
+7. Остаточные параметры (...) и распространение
+
+- Распространение
+Распространение позволяет "разбивать" массив на отдельные элементы.
+В примере ниже массив расширяется и распространяется на элементы x, y и z:
+
+# Пример:
+{
+    let addNumbers = (x, y, z) => x+y+z; //# сумма x, y и z
+    const numbers = [1,2,3];
+    console.log(addNumbers(...numbers));//# 6
+}
+
+- Остаточные параметры
+"..." порой называют "оператор отдыха" и обозначают "...rest"
+данный синтаксис позволяет "сжимать" ненужные нам элементы массива в ещё один массив.
+
+# Пример: 
+{
+    let [name1, name2, ...rest] = ["Julius", "Caesar", "Consul", "of the Roman Republic"];
+    
+    //# rest - тоже массив, в него собираются "остаточные значения"
+    alert(rest[0]); //# Consul
+    alert(rest[1]); //# of the Roman Republic
+    alert(rest.length); //# 2
+}
+
+8. Методы Object.assign() и Object.is()
+
+Метод "Object.assign()" используется для:
+
+- Клонирования объекта:
+# Пример:
+{
+    let person = { height: '176' };
+    let clonePerson = Object.assign({}, person);
+    console.log(clonePerson); //# {height:'176'}
+}
+
+- Слияния объектов:
+# Пример:
+{
+    let person = {height:'176'};
+    let employee = {id:'#1237', name:'John'};
+    let myEmp = Object.assign({}, person, employee);
+    console.log(myEmp); //# {height:'176',id:'#1237', name:'John'}
+}
+
+Объединенные объекты имеют свойства, содержащиеся в исходных объектах.
+Если объединяемые объекты имеют одинаковые свойства, то свойства более позднего объекта
+переопределяют свойства более раннего объекта.
+
+Метод "Object.is()" используется для сверки значений.
+# Пример:
+{
+    let a=10, b=10;
+    Object.is(a,b); //# true
+    
+    let c=20;
+    Object.is(a,c); //# false
+
+    let obj1={a:1};
+    let obj2={a:1};
+    Object.is(obj1, obj2);//# false, объекты ссылаются на разные переменные.
+    Object.is(obj1, obj1);//# true, объекты ссылаются на одинаковые переменные
+}
+
+Т.О. метод "Object.is()" проверяет, что оба объекта имеют не только одинаковые значения,
+но и одну и ту же ссылку на эти значения. Только тогда метод вернёт истинное значение "true".
+
+
+9. Итераторы, "for-of"
+
+- Метод "for-of"
+В ES5 существовали только операторы "for" и "for-in".
+
+С for-in было много проблем.
+Самая большая - отсутствие гарантии корректной последовательности.
+
+Поэтому в ES6 был добавлен цикл "for-of"
+Это - новый синтаксис в ES6:
+for (var key of table) {
+    console.log(key + ' = ' + table[key]);
+}
+Такое применение будет гарантировать нам последовательность ключей.
+
+-  Свойство объекта с ключом "Symbol.iterator"
+Чтобы объект был итерируемым он должен иметь свойство с ключом "Symbol.iterator".
+Это свойство с ключом "Symbol.iterator" - ещё одно дополнение в ES6.
+Именно его использует наш for-of.
+
+Элемент объекта table [Symbol.iterator] должен быть функцией, которая соответствует протоколу итераторов,
+то есть она должна возвращать объект следующим образом: { next: function () {}}.
+
+Каждый раз, когда for-of вызывает next, сама функция next должна возвращать объект вида {value: …, done: [true/false] }.
+
+Полная реализация:
+table[Symbol.iterator] = function () {
+    var keys = Object.keys(this).sort();
+    var index = 0;
+    
+    return {
+      next: function () {
+        return {
+          value: keys[index], done: index++ >= keys.length
+        };
+      }
+    }
+}
+
+В чём разница for-in и for-of?
+for-of выдаёт значения, которые есть в массиве, а все остальные свойства опускает.
+Это происходит в следствии того, что итератор массива возвращает только ожидаемые параметры.
+
+Пример:
+var list = [3, 5, 7];
+list.context = 'bar';
+
+//# Используем for-in
+for (var key in list) {
+  console.log(key); //# 0, 1, 2, context
+}
+ 
+//# Теперь используем for-of
+for (var key of list) {
+  console.log(key); //# 3, 5, 7
+}
+
+10. Классы
+Классы - это шаблоны для создания объектов.
+
+# Пример синтаксиса:
+{
+    Class Person {
+        constructor(name, age){
+        this.name = name;
+        this.age = age;
+        }
+    }
+
+    let p = new Person('John',28);
+    //# с помощью конструктора быстро создали новый объект
+}
+
+Класс состоит из собственных свойств и методов, на которые можно ссылаться с помощью ключевого слова this внутри класса.
+# Пример:
+{
+    Class Person {
+        Name='John';
+        getName(){
+        return this.name;//# John
+            }
+       }
+    
+    let p = new Person();
+    console.log(p.getName()); //# John
+}

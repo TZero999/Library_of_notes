@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"name": ".API's",
+			"path": "../.API's"
+		},
+		{
+			"name": "QA Inform",
+			"path": "."
+		},
+		{
+			"name": "JavaScriptTraining",
+			"path": "../Github/JavaScriptTraining"
+		},
+		{
+			"name": "Web-design",
+			"path": "../Web-design"
+		},
+		{
+			"name": "CodeceptJS",
+			"path": "../CodeceptJS"
+		},
+		{
+			"path": "../Docker"
+		},
+		{
+			"path": "../Portfolio"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Web-design"
+	}
+}
