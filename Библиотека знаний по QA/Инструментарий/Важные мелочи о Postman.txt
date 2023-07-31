@@ -44,13 +44,157 @@ https://learning.postman.com/docs/writing-scripts/script-references/variables-li
 Активное окружение можно выбрать с помощью правого верхнего Dropdown-списка.
 
 5. Скрипты
+Postman позволяет использовать "Pre-request" скрипты и "Test" скрипты.
+Отличие pre-request скриптов от test - в моменте их выполнения.
 
+Если говорить о хронологии выполнения скриптов, то вот в какой последовательности
+выполняются скрипты в Postman:
+1) Collection: Pre-request script;
+2) Folder: Pre-request scripts;
+3) Request: Pre-request scripts;
+4) Request;
+5) Response;
+6) Collection: Test scripts;
+7) Folder: Test scripts;
+8) Request: Test scripts.
 
-
+Т.О. сначала выполняются пре-реквесты коллекций, папок, конкретных запросов.
+Затем выполняется запрос, на него получается ответ.
+Затем выполняются тест-скрипты для коллекций, папок и потом для конкретных запросов.
 
 
 Официальная документация по скриптам с примерами:
 https://learning.postman.com/docs/writing-scripts/intro-to-scripts/
 
 
+6. Пример написания скрипта в окне "Tests"
+6.1 Работа с глобальной переменной:
+{
+    Перед запуском данного кода мы добавили в Environment "Global"
+    переменную с именем "count" и значением "20".
+
+    // Сначала вернём переменной count значение по умолчанию:
+    pm.globals.set("count", 20);
+
+    // Проверим существуют ли переменные count и count2:
+    console.log('Does count exist? '  + ${pm.globals.has('count')} );
+    console.log('Does count2 exist? ' + ${pm.globals.has('count2')} );
+
+    // Проверим значение переменной count:
+    console.log('Count value: ' + ${pm.globals.get("count")});
+
+    // Установим для переменных count и count2 значение 3
+    pm.globals.set("count", 3);
+    pm.globals.set("count2", 3);
+
+    // Информируем о том, что значения переменных изменены и отображаем новые значения:
+    console.log("Set var 'count'.  \n" + pm.globals.replaceIn("Global variable count = {{count}}"));
+    console.log("Set var 'count2'. \n" + pm.globals.replaceIn("Global variable count2 = {{count2}}"));
+
+    // Удаляем переменную count2, оповещаем об этом и через секунду выводим "undefined" значение переменной:
+    console.log("Deleting count2...");
+    pm.globals.unset("count2");
+    setTimeout( () => console.log("Global variable count2 = " + pm.globals.get("count2")), 1000);
+}
+
+6.2 Работа с переменными текущей коллекции:
+{
+    pm.collectionVariables.has("count");
+    pm.collectionVariables.get("count");
+    pm.collectionVariables.set("count", 3);
+    pm.collectionVariables.unset("count");
+    pm.collectionVariables.replaceIn("Count = {{count}}");
+    pm.collectionVariables.clear();
+}
+
+6.3 Работа с переменными выбранного окружения:
+{
+    pm.environment.has("count");
+    pm.environment.get("count");
+    pm.environment.set("count", 3);
+    pm.environment.unset("count");
+    pm.environment.replaceIn("Count = {{count}}");
+    pm.environment.clear();
+}
+
+6.3 Работа с переменными уровня данных:
+{
+    pm.iterationData.has("count");
+    pm.iterationData.get("count");
+    pm.iterationData.unset("count");
+}
+
+6.3 Работа с локальными переменными:
+{
+    pm.variables.has("count");
+    pm.variables.get("count");
+    pm.variables.set("count", 3);
+
+    // А здесь потестируем локальные переменные и их свойство стираться после выполнения запроса:
+    console.log('(Local, before change) count = ' + pm.variables.get("count"));
+    pm.variables.set("count", 18);
+    console.log('(Local, after change) count = ' + pm.variables.get("count"));
+    // При следующем выполнении запроса переменная вновь будет иметь начальное значение = 5.
+}
+
+7. Взаимодействие с запросом через pm.request:
+pm.request позволяет нам напрямую менять параметры запроса (например, заголовки),
+как показано в примере ниже:
+
+{
+    // Добавим к запросу новый заголовок с именем “custom-header3”.
+    pm.request.headers.add({
+    key: "custom-header3",
+    value: "custom-value3"
+    });
+
+    // Удалим существующий заголовок с именем “custom-header1”.
+    pm.request.headers.remove("custom-header1");
+
+    // Обновим значение для заголовка с именем “custom-header2”.
+    pm.request.headers.upsert({
+    key: "custom-header2",
+    value: "custom-value4"
+    });
+
+    // Выведем информацию в консоль:
+    console.log("Request method : " + pm.request.method);
+    console.log("Request url : " + pm.request.url);
+    console.log("Request headers : " + pm.request.headers);
+    console.log("Request body : " + pm.request.body);
+}
+
+Также мы можем менять параметры строки запроса:
+"pm.request.addQueryParams("param1=value1")"; - добавляем параметр
+"pm.request.removeQueryParams("param1")"; - удаляем параметр.
+
+8. Работа с данными ответа:
+Работать с ответом от сервера в скриптах мы можем с помощью объекта pm.response. 
+Рассмотрим его основные свойства и методы:
+    pm.response.code         - код ответа;
+    pm.response.status       - описание статуса (ОК и т.д.);
+    pm.response.headers      - получаем заголовки ответа;
+    pm.response.responseTime - получаем время ответа сервера в мс;
+    pm.response.responseSize - получаем размер ответа сервера;
+    pm.response.text();      - тело ответа в текстовом формате;
+    pm.response.json();      - тело ответа в формате JSON;
+
+Таким образом можно получать и записывать параметры ответа сервера.
+
+9. Работа с cookies:
+Основные свойства и методы для работы cookies находятся в объекте pm.cookies.
+Основные методы - это has(), get() и toObject().
+
+Рассмотрим их подробнее:
+    pm.cookies.has(cookieName) - проверяем, есть ли кукис с таким именем; 
+    pm.cookies.get(cookieName) - получаем значение кукиса;
+    pm.cookies.toObject()      - возвращаем кукис в виде объекта (полезно для отладки);
+
+Так, для существующей куки метод has() вернёт значение "true",
+для несуществующей - "false".
+Вызов метода get для существующей куки вернёт её значение,
+для несуществующей - "undefined".
+
+Вызов "pm.cookies.toObject()" вернёт нам куки в формате
+{cookieName: "cookieValue"}.
 
