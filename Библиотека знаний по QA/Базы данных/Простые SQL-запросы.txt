@@ -1,0 +1,75 @@
+- SELECT * FROM courses
+Вывести таблицу "courses" из БД students.
+
+- SELECT DISTINCT number FROM courses
+Вывести поле "number", предварительно убрав дубликаты.
+
+- SELECT * FROM courses LIMIT 2
+Вывести первые 2 записи из таблицы "courses".
+
+- SELECT number AS номер FROM courses
+Вывести поле "number", в качестве его названия отобразить "номер".
+
+* Условные операции
+
+- SELECT faculty, number FROM courses WHERE faculty = ”bio”
+Вывести поля "faculty" и "number" со значением "bio" в поле "faculty".
+
+- SELECT number FROM courses WHERE number > 1
+Вывести поле "number" где значения в поле "number" больше 1-цы.
+
+* Булевые операции:
+
+- SELECT * FROM courses WHERE number = 1 AND faculty = “bio”
+Вывести все записи у которых в поле "number" 1-ца И в поле "faculty" слово "bio".
+
+- SELECT * FROM courses WHERE number = 1 OR faculty = “gum”
+Вывести все записи, где в поле "number" 1-ца ИЛИ в поле "faculty" слово "gum".
+
+* Поиск похожих значений:
+
+- SELECT * FROM courses WHERE faculty LIKE “%o”
+Вывести все записи, в которых в поле "faculty" слово, заканчивающееся на "о".
+
+- SELECT * FROM courses WHERE faculty LIKE “_e%”
+Вывести все записи, в которых в поле "faculty" слово, у которого первый символ - любой,
+второй - "e", а последующее любое количество символов - любые символы.
+
+* Диапазоны значений:
+
+- SELECT * FROM courses WHERE number BETWEEN 2 AND 4;
+Вывести все записи, в которых в поле "number" значения в диапазоне от 2 до 4
+
+- SELECT * FROM courses WHERE NOT number BETWEEN 2 AND 4;
+Вывести все записи, в которых в поле "number" значения НЕ входят в диапазон от 2 до 4
+
+- SELECT * FROM courses WHERE number IN (1,4);
+Вывести все записи, в которых в поле "number" значение или 1, или 4.
+
+* Объединение булевых операций:
+
+- SELECT * FROM courses WHERE (faculty = “teo” OR faculty = “bio” AND number = 1;
+Вывести все записи, в которых в поле "faculty" слова "teo" или "bio", а в поле "number" 
+у этих значений цифра 1. 
+Здесь мы объединили условия и использовали скобки, иначе бы запрос выводил другую информацию.
+
+* Сортировка:
+
+- SELECT * FROM courses ORDER BY faculty
+Вывести все записи, отсортировав их в алфавитном порядке по значениям в поле "faculty"
+
+- SELECT * FROM courses ORDER BY faculty DESC
+Вывести все записи, отсортировав их в ОБРАТНОМ алфавитном порядке по значениям в поле "faculty"
+
+* Агрегатные функции:
+- SELECT AVG(number) FROM courses
+Вывести среднее значение по полю "number".
+
+- SELECT SUM(number) FROM courses
+Вывести сумму значений в поле "number".
+
+- SELECT MIN(number) AS min_number FROM courses
+Вывести минимальное значение по полю "number", в качестве его названия отобразить "min_number".
+
+- SELECT COUNT(faculty) FROM courses
+Вывести количество записей с заполненным полем "faculty".
