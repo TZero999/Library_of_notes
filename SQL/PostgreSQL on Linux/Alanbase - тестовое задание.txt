@@ -1,0 +1,128 @@
+1. Создаём 2 таблицы:
+
+- Таблица "Clients":
+alanbase_test=# CREATE TABLE clients
+(
+    id integer NOT NULL,
+    name character varying(30),
+    last_name character varying(30),
+    CONSTRAINT clients_pkey PRIMARY KEY (id)
+);
+
+- Таблица "Orders":
+alanbase_test=# CREATE TABLE orders
+(
+    id integer NOT NULL PRIMARY KEY,
+    client_id integer,
+    amount numeric(5,2),
+    curency character varying(10),
+    date date,
+    
+    FOREIGN KEY (client_id) REFERENCES clients (id)
+);
+
+2. Заполняем таблицу "Clients":
+alanbase_test=# INSERT INTO clients(id, name, last_name) VALUES (1,'Petr', 'Sergeev');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO clients(id, name, last_name) VALUES (2,'Anna', 'Ivanovskaya');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO clients(id, name, last_name) VALUES (3,'Ivan', 'Ivanov');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO clients(id, name, last_name) VALUES (4, 'Alexey', 'Dmitrienko');
+INSERT 0 1
+
+alanbase_test=# SELECT * FROM clients;
+
+ id |  name  |  last_name  
+----+--------+-------------
+  1 | Petr   | Sergeev
+  2 | Anna   | Ivanovskaya
+  3 | Ivan   | Ivanov
+  4 | Alexey | Dmitrienko
+(4 rows)
+
+3. Заполняем таблицу "Orders":
+alanbase_test=# INSERT INTO orders VALUES (1000, 4, 200, 'USD', '2023-06-02');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1001, 4, 400, 'RUB', '2023-01-19');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1002, 3, 123.56, 'EUR', '2023-06-02');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1003, 1, 500, 'USD', '2023-05-02');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1004, 2, 10, 'USD', '2023-01-19');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1005, 4, 12, 'EUR', '2023-06-02');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1006, 1, 14, 'RUB', '2023-07-14');
+INSERT 0 1
+
+alanbase_test=# INSERT INTO orders VALUES (1007, 4, 17, 'RUB', '2023-06-02');
+INSERT 0 1
+
+alanbase_test=# SELECT * FROM orders;
+
+  id  | client_id | amount | curency |    date    
+------+-----------+--------+---------+------------
+ 1000 |         4 | 200.00 | USD     | 2023-06-02
+ 1001 |         4 | 400.00 | RUB     | 2023-01-19
+ 1002 |         3 | 123.56 | EUR     | 2023-06-02
+ 1003 |         1 | 500.00 | USD     | 2023-05-02
+ 1004 |         2 |  10.00 | USD     | 2023-01-19
+ 1005 |         4 |  12.00 | EUR     | 2023-06-02
+ 1006 |         1 |  14.00 | RUB     | 2023-07-14
+ 1007 |         4 |  17.00 | RUB     | 2023-06-02
+(8 rows)
+
+4. Выполняем поставленные задачи:
+
+Задача 1:
+Вывести список клиентов, которые сделали более 13 заказов за июнь 2023 года. 
+В выгрузке должны быть столбцы: "id", "name", "last_name".
+
+alanbase_test=# SELECT clients.id, name, last_name
+FROM clients
+
+JOIN orders
+ON clients.id = orders.client_id
+
+WHERE date > '2023-06-01' 
+AND date < '2023-07-01'
+
+GROUP BY clients.id
+HAVING COUNT(amount)>13
+ORDER BY clients.id;
+
+ id | name | last_name 
+----+------+-----------
+(0 rows)
+
+Задача 2:
+Посчитать для каждого клиента сумму заказов, сделанных ими, 
+для каждой валюты. В выгрузке должны быть поля: id клиента, 
+валюта, сумма заказов клиента в этой валюте.
+
+alanbase_test=# SELECT client_id, curency, SUM(amount) AS amount_of_orders
+FROM orders
+GROUP BY curency, client_id
+ORDER BY client_id, curency;
+
+ client_id | curency | amount_of_orders 
+-----------+---------+------------------
+         1 | RUB     |            14.00
+         1 | USD     |           500.00
+         2 | USD     |            10.00
+         3 | EUR     |           123.56
+         4 | EUR     |            12.00
+         4 | RUB     |           417.00
+         4 | USD     |           200.00
+(7 rows)

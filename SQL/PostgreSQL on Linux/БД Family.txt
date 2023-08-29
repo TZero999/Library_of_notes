@@ -1,0 +1,184 @@
+1. Создаём таблицу FamilyMembers:
+
+    family_test=# CREATE TABLE FamilyMembers();
+    CREATE TABLE
+    family_test=# ALTER TABLE FamilyMembers ADD member_id integer NOT NULL PRIMARY  KEY;
+    ALTER TABLE
+    family_test=# ALTER TABLE FamilyMembers ADD status varchar(30);
+    ALTER TABLE
+    family_test=# ALTER TABLE FamilyMembers ADD member_name varchar(100);
+    ALTER TABLE
+    family_test=# ALTER TABLE FamilyMembers ADD birthday date;
+    ALTER TABLE
+
+2. Создаём таблицу Payments:
+
+    family_test=# CREATE TABLE Payments();
+    CREATE TABLE
+    family_test=# ALTER TABLE Payments ADD payment_id integer NOT NULL PRIMARY KEY;ALTER TABLE
+    family_test=# ALTER TABLE Payments ADD family_member integer;
+    ALTER TABLE
+    family_test=# ALTER TABLE Payments ADD good integer;
+    ALTER TABLE
+    family_test=# ALTER TABLE Payments ADD amount integer;
+    ALTER TABLE
+    family_test=# ALTER TABLE Payments ADD unit_price integer;
+    ALTER TABLE
+    family_test=# ALTER TABLE Payments ADD date date;
+    ALTER TABLE
+
+3. Создаём таблицу GoodTypes:
+
+    family_test=# CREATE TABLE GoodTypes();
+    CREATE TABLE
+    family_test=# ALTER TABLE GoodTypes ADD good_type_id integer NOT NULL PRIMARY KEY;
+    ALTER TABLE
+    family_test=# ALTER TABLE GoodTypes ADD good_type_name varchar(100);
+    ALTER TABLE
+
+4. Создаём таблицу Goods:
+
+    family_test=# CREATE TABLE Goods();
+    CREATE TABLE
+    family_test=# ALTER TABLE Goods ADD good_id integer NOT NULL PRIMARY KEY;
+    ALTER TABLE
+    family_test=# ALTER TABLE Goods ADD good_name varchar(50);
+    ALTER TABLE
+    family_test=# ALTER TABLE Goods ADD type integer;
+    ALTER TABLE
+
+5. Создаём связи между таблицами:
+
+    family_test=# ALTER TABLE Payments ADD CONSTRAINT fk_FamilyMembers_Payments FOREIGN KEY (family_member) REFERENCES FamilyMembers (member_id);
+    ALTER TABLE
+
+    family_test=# ALTER TABLE Payments ADD CONSTRAINT fk_Goods_Payments FOREIGN KEY (good) REFERENCES Goods (good_id);
+    ALTER TABLE
+
+    family_test=# ALTER TABLE Goods ADD CONSTRAINT fk_Goods_GoodTypes FOREIGN KEY (type) REFERENCES GoodTypes (good_type_id);
+    ALTER TABLE
+
+6. Заполняем таблицу FamilyMembers:
+
+    family_test=# INSERT INTO FamilyMembers VALUES(1, 'father', 'Headley Quincey', '1960-05-13T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(2, 'mother', 'Flavia Quincey', '1963-02-16T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(3, 'son', 'Andie Quincey', '1983-06-05T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(4, 'daughter', 'Lela Quincey', '1985-06-07T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(5, 'daughter', 'Annie Quincey', '1988-04-10T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(6, 'father', 'Ernest Forrest', '1961-09-11T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(7, 'mother', 'Constance Forrest', '1968-09-06T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO FamilyMembers VALUES(8, 'daughter', 'Wednesday Addams', '2005-01-13T00:00:00.000Z');
+    INSERT 0 1
+
+7. Заполняем таблицу GoodsTypes:
+
+    family_test=# INSERT INTO GoodTypes VALUES(1, 'communal payments');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(2, 'food');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(3, 'delicacies');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(4, 'entertaiment');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(5, 'treatment');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(6, 'education');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(7, 'clothes');
+    INSERT 0 1
+    family_test=# INSERT INTO GoodTypes VALUES(8, 'equipment');
+    INSERT 0 1
+
+8. Заполняем таблицу Goods:
+
+    family_test=# INSERT INTO Goods VALUES(1, 'apartment fee',1);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(2, 'phone fee',1);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(3, 'bread',2);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(4, 'milk',2);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(5, 'red caviar',3);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(6, 'cinema',4);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(7, 'black caviar',3);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(8, 'cough tablets',5);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(9, 'potato', 2);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(10, 'pineapples', 3);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(11, 'television', 8);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(12, 'vacuum cleaner', 8);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(13, 'jacket', 7);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(14, 'fur coat', 7);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(15, 'music school fee', 6);
+    INSERT 0 1
+    family_test=# INSERT INTO Goods VALUES(16, 'english school fee', 6);
+    INSERT 0 1
+
+9. Заполняем таблицу Payments:
+
+    family_test=# INSERT INTO Payments VALUES(1,1,1,1,2000,'2005-02-12T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(2,2,1,1,2100,'2005-03-23T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(3,3,4,5,20,'2005-05-14T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(4,5,5,1,350,'2005-07-22T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(5,4,7,2,150,'2005-07-26T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(6,5,6,1,100,'2005-02-20T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(7,2,6,1,120,'2005-07-30T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(8,2,16,1,5500,'2005-09-12T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(9,5,15,1,230,'2005-09-30T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(10,5,15,1,230,'2005-10-27T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(11,5,15,1,250,'2005-11-28T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(12,5,15,1,250,'2005-12-22T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(13,3,13,1,2200,'2005-08-11T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(14,2,14,1,66000,'2005-10-23T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(15,1,9,5,8,'2005-02-03T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(16,1,9,5,7,'2005-03-11T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(17,2,9,3,8,'2005-03-18T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(18,1,9,8,8,'2005-04-20T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(19,1,9,5,7,'2005-05-13T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(20,2,9,3,150,'2005-06-11T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(21,3,10,1,100,'2006-01-12T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(22,1,5,3,10,'2006-03-12T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(23,1,8,1,300,'2005-06-05T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# INSERT INTO Payments VALUES(24,3,6,8,150,'2005-06-20T00:00:00.000Z');
+    INSERT 0 1
+    family_test=# 
